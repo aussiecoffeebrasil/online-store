@@ -1,0 +1,37 @@
+<!************* PayPal Checkout Reference - Customize the PayPal JavaScript SDK Script *************>
+
+<!DOCTYPE html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+
+<body>
+  <script
+    src="https://www.paypal.com/sdk/js?client-id=sb 		<! The client ID identifies the PayPal account that sets up and finalizes transactions. By default, funds from any transactions are settled into this account.>
+    
+    &currency=BRL 						<! The currency for the transaction. Funds are captured into your account in the specified currency. Defaults to USD.> 
+    &intent=capture 						<! The intent for the transaction. This determines whether the funds are captured immediately, while the buyer is present on the page, or later. Defaults to capture.> >
+    &commit=false 						<! The commit status of the transaction. Determines whether to show a Pay Now or Continue button in the Checkout flow. Defaults to true.>
+    &vault=false 						<! The vault status of the transaction. If set to true, shows only funding sources that you can add to the vault, or use to set up a billing agreement, reference transaction, or subscription. Defaults to false.>
+    &components=buttons						<! The PayPal components that you intend to render on your page. Must be a comma-separated list and defaults to buttons for the Smart Payment Buttons component.>
+    &disable-funding=						<! The disabled funding sources for the transaction. Any funding sources passed are not displayed in the Smart Payment Buttons. By default, funding source eligibility is smartly decided based on a variety of factors.>
+    &disable-card=						<! The disabled cards for the transaction. Any cards passed do not display in the Smart Payment Buttons. By default, card eligibility is smartly decided based on a variety of factors.>
+    &integration-date=2019-07-25				<! The integration date of the script, passed as a YYYY-MM-DD value. Defaults to the date when your client ID was created, and if passed, reflects the date that you added the PayPal integration to your site. This parameter ensures backwards compatibility.>
+    &debug=false						<! Set to true to enable debug mode. Debug mode is recommended only for testing and debugging, and causes a significant increase in the size of the script, and significant performance decrease. Defaults to false.>
+    &buyer-country=						<! The buyer country determines which funding sources are eligible for a given buyer. Defaults to the buyer's IP geolocation.>
+    &locale=pt_BR,pt_BR						<! The locale renders components. By default PayPal smartly detects the correct locale for the buyer based on their geolocation and browser preferences. It is recommended to pass this parameter only if you need the PayPal buttons to render in the same language as the rest of your site.>
+   ">
+  </script>
+  
+  <div id="paypal-button-container"></div>
+  
+  
+  <div id="paypal-button-container"></div>
+
+  <script>
+    paypal.Buttons().render('#paypal-button-container');
+  </script>
+  
+</body>  
