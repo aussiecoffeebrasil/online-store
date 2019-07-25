@@ -1,5 +1,13 @@
 <!************* PayPal Checkout Reference - Customize the PayPal JavaScript SDK Script *************>
 
+
+
+<!***************************************
+2. Add the PayPal script to your web page
+Add the PayPal script to your web page, then add your sandbox client-id to the script tag:
+***************************************>
+
+
 <!DOCTYPE html>
 
 <head>
@@ -7,9 +15,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 </head>
 
-<body>
   <script
-    src="https://www.paypal.com/sdk/js?client-id=sb 		<! The client ID identifies the PayPal account that sets up and finalizes transactions. By default, funds from any transactions are settled into this account.>
+    src="https://www.paypal.com/sdk/js?client-id=admin@aussiecoffeebrasil.com 		<! The client ID identifies the PayPal account that sets up and finalizes transactions. By default, funds from any transactions are settled into this account.>
     
     &currency=BRL 						<! The currency for the transaction. Funds are captured into your account in the specified currency. Defaults to USD.> 
     &intent=capture 						<! The intent for the transaction. This determines whether the funds are captured immediately, while the buyer is present on the page, or later. Defaults to capture.> >
@@ -23,15 +30,142 @@
     &buyer-country=						<! The buyer country determines which funding sources are eligible for a given buyer. Defaults to the buyer's IP geolocation.>
     &locale=pt_BR,pt_BR						<! The locale renders components. By default PayPal smartly detects the correct locale for the buyer based on their geolocation and browser preferences. It is recommended to pass this parameter only if you need the PayPal buttons to render in the same language as the rest of your site.>
    ">
+   
   </script>
   
-  <div id="paypal-button-container"></div>
-  
-  
-  <div id="paypal-button-container"></div>
 
+<!***************************************
+3. Render the Smart Payment Buttons
+Next, render the PayPal Smart Payment Buttons to a container element on your page:
+***************************************>
+
+  <div id="paypal-button-container"></div>
+  
   <script>
     paypal.Buttons().render('#paypal-button-container');
   </script>
+  
+  
+<!***************************************
+4. Set up the transaction
+Next, implement the createOrder function, which is called when the buyer clicks the PayPal button. This step:
+
+Calls PayPal using actions.order.create() to set up the details of the transaction, including the amount, line item details, and more.
+Launches the PayPal Checkout window so the buyer can log in and approve the transaction on paypal.com.
+
+This is complex.... not sure if i missed anything.... i just cut and pasted the standard code
+***************************************>
+
+  <script>
+  
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      // Set up the transaction
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: '0.01'
+                  }
+                        }]
+                                         }
+        
+                }).render('#paypal-button-container');
+  
+  </script>
+
+
+<!***************************************
+5. Capture the transaction
+Next, implement the onApprove function, which is called after the buyer approves the transaction on paypal.com. This function:
+
+Optionally calls PayPal using actions.order.get() to get the transaction details and display them to the buyer.
+Calls PayPal using actions.order.capture() to capture the funds from the transaction.
+Shows a message to the buyer to let them know the transaction is successful.
+
+This is complex.... not sure if i missed anything.... i just cut and pasted the standard code
+***************************************>
+
+
+<script>
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: '0.01'
+          }
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      // Capture the funds from the transaction
+      return actions.order.capture().then(function(details) {
+        // Show a success message to your buyer
+        alert('Transaction completed by ' + details.payer.name.given_name);
+      });
+    }
+  }).render('#paypal-button-container');
+</script>
+
+
+<!***************************************
+6. Verify the transaction
+Next, your server verifies the transaction, saves it to your database, and dispatches the purchased item to the buyer.
+
+1. Client side
+On the client, call your server and pass the orderID that is passed from the onApprove callback:
+
+This is complex.... not sure if i missed anything.... i just cut and pasted the standard code
+***************************************>
+
+<script>
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+a      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: '0.01'
+          }
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        alert('Transaction completed by ' + details.payer.name.given_name);
+        // Call your server to save the transaction
+        return fetch('/paypal-transaction-complete', {
+          method: 'post',
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            orderID: data.orderID
+          })
+        });
+      });
+    }
+  }).render('#paypal-button-container');
+</script>
+
+
+<!***************************************
+6. Verify the transaction
+Next, your server verifies the transaction, saves it to your database, and dispatches the purchased item to the buyer.
+
+2. Server side
+Use this fully-annotated code sample to:
+
+Set up your server to make calls to PayPal
+Set up your server to receive a call from the client with the order ID
+Call PayPal to get the transaction details
+Handle any errors from the call
+Validate the transaction details are as expected
+Save the transaction in your database
+Return a successful response to the client
+***************************************>
+
+
+
+
   
 </body>  
